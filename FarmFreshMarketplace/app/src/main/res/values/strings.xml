@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FarmFresh Marketplace</string>
+
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="marketplace">Marketplace</string>
+    <string name="orders">Orders</string>
+    <string name="profile">Profile</string>
+
+    <!-- Cart/Checkout -->
+    <string name="cart">Cart</string>
+    <string name="checkout">Checkout</string>
+    <string name="add_to_cart">Add to cart</string>
+</resources>
+
