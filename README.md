@@ -1,11 +1,8 @@
-# Yieldy
+# Freshly
 
-Yieldy is an Android app developed in Kotlin to support farmers by integrating financial management (expense tracking, loans, crop insurance) with a direct-to-consumer marketplace, enabling better income and resource management.
+Freshly is an Android app developed in Kotlin to support farmers by integrating a direct-to-consumer marketplace, enabling better income and resource management.
 
 ## Features
-
-- Expense, loan, and subsidy tracking
-- Crop insurance calculator and policy management
 - Digital storefront for produce listing and sales
 - Secure order placement and payment processing
 - Delivery and pickup coordination
@@ -13,7 +10,7 @@ Yieldy is an Android app developed in Kotlin to support farmers by integrating f
 ## Tech Stack
 
 - Kotlin, Android SDK
-- Room/SQLite or Firebase for database
+- Firebase for database
 - Payment gateway integration
 - GitHub for version control
 
