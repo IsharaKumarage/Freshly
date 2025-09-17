@@ -78,4 +78,30 @@
     <string name="between_label">Between %1$s - %2$s</string>
     <string name="continue_shopping">Continue Shopping</string>
     <string name="view_order_history">View Order History</string>
+    <!-- Signup & Farmer Onboarding -->
+    <string name="create_your_account">Create your account</string>
+    <string name="i_am">I am a:</string>
+    <string name="role_consumer">Consumer</string>
+    <string name="role_consumer_desc">Buy fresh produce</string>
+    <string name="role_farmer">Farmer</string>
+    <string name="role_farmer_desc">Sell your produce</string>
+    <string name="agree_terms">I agree to the</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="become_partner">Become a Partner</string>
+    <string name="join_partner_network">Join Our Farmer Network</string>
+    <string name="get_started_partner">Get Started as a Partner</string>
+    <string name="farmer_onboarding">Farmer Onboarding</string>
+    <string name="choose_your_role">Choose Your Role</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="farm_information">Farm Information</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="farm_name">Farm Name</string>
+    <string name="address">Address</string>
+    <string name="city">City</string>
+    <string name="farm_description">Farm Description</string>
+    <string name="upload_profile_photo">Upload Profile Photo</string>
+    <string name="continue">Continue</string>
+    <string name="back">Back</string>
 </resources>

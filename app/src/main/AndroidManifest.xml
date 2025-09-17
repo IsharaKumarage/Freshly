@@ -84,6 +84,23 @@
             android:exported="false"
             android:theme="@style/Theme.Freshly" />
 
+        <activity
+            android:name=".ui.onboarding.PartnerIntroActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+        <activity
+            android:name=".ui.onboarding.FarmerOnboardingStep1Activity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+        <activity
+            android:name=".ui.onboarding.FarmerOnboardingStep2Activity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+        <activity
+            android:name=".ui.onboarding.FarmerOnboardingStep3Activity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+
     </application>
 
 </manifest>

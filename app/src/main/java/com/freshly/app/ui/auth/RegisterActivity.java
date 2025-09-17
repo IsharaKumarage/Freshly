@@ -15,6 +15,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import com.freshly.app.ui.onboarding.PartnerIntroActivity;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -25,9 +29,14 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText etConfirmPassword;
     private MaterialButton btnRegister;
     private MaterialTextView tvLogin;
+    private LinearLayout cardConsumer;
+    private LinearLayout cardFarmer;
+    private CheckBox cbTerms;
 
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
+
+    private String selectedRole = "CONSUMER"; // or FARMER
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         initViews();
         setupClicks();
+        highlightRole();
     }
 
     private void initViews() {
@@ -49,11 +59,17 @@ public class RegisterActivity extends AppCompatActivity {
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnRegister = findViewById(R.id.btnRegister);
         tvLogin = findViewById(R.id.tvLogin);
+        cardConsumer = findViewById(R.id.cardConsumer);
+        cardFarmer = findViewById(R.id.cardFarmer);
+        cbTerms = findViewById(R.id.cbTerms);
     }
 
     private void setupClicks() {
         btnRegister.setOnClickListener(v -> attemptRegister());
         tvLogin.setOnClickListener(v -> finish()); // go back to LoginActivity
+
+        cardConsumer.setOnClickListener(v -> { selectedRole = "CONSUMER"; highlightRole(); });
+        cardFarmer.setOnClickListener(v -> { selectedRole = "FARMER"; highlightRole(); });
     }
 
     private void attemptRegister() {
@@ -68,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password)) { etPassword.setError(getString(R.string.password)); return; }
         if (password.length() < 6) { etPassword.setError("Password must be at least 6 characters"); return; }
         if (!TextUtils.equals(password, confirm)) { etConfirmPassword.setError("Passwords do not match"); return; }
+        if (!cbTerms.isChecked()) { Toast.makeText(this, "Please agree to the Terms and Conditions", Toast.LENGTH_SHORT).show(); return; }
 
         btnRegister.setEnabled(false);
         btnRegister.setText(R.string.loading);
@@ -85,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
                     user.put("fullName", name);
                     user.put("email", email);
                     user.put("phoneNumber", phone);
-                    user.put("userType", "CONSUMER");
+                    user.put("userType", selectedRole);
                     user.put("profileImageUrl", "");
                     user.put("address", "");
                     user.put("city", "");
@@ -97,8 +114,13 @@ public class RegisterActivity extends AppCompatActivity {
                     firestore.collection("users").document(uid).set(user)
                             .addOnSuccessListener(unused -> {
                                 Toast.makeText(this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(this, MainActivity.class));
-                                finish();
+                                if ("FARMER".equals(selectedRole)) {
+                                    startActivity(new Intent(this, PartnerIntroActivity.class));
+                                    finish();
+                                } else {
+                                    startActivity(new Intent(this, MainActivity.class));
+                                    finish();
+                                }
                             })
                             .addOnFailureListener(e -> onError(e.getMessage()));
                 })
@@ -113,5 +135,16 @@ public class RegisterActivity extends AppCompatActivity {
         Toast.makeText(this, msg != null ? msg : getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
         btnRegister.setEnabled(true);
         btnRegister.setText(R.string.register);
+    }
+
+    private void highlightRole() {
+        // Simple visual cue: selected role card uses splash_background, other uses gray
+        if ("CONSUMER".equals(selectedRole)) {
+            cardConsumer.setBackgroundResource(R.drawable.splash_background);
+            cardFarmer.setBackgroundColor(0xFFF7F7F7);
+        } else {
+            cardFarmer.setBackgroundResource(R.drawable.splash_background);
+            cardConsumer.setBackgroundColor(0xFFF7F7F7);
+        }
     }
 }

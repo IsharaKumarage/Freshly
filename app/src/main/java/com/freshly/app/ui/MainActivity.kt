@@ -7,6 +7,8 @@ import com.freshly.app.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.freshly.app.ui.marketplace.MarketplaceFragment
 import com.freshly.app.ui.cart.CartFragment
+import com.freshly.app.ui.categories.CategoriesFragment
+import com.freshly.app.ui.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
     
@@ -19,9 +21,9 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_marketplace -> switchFragment(MarketplaceFragment())
-                R.id.nav_my_products -> switchFragment(PlaceholderFragment.newInstance("My Products"))
+                R.id.nav_my_products -> switchFragment(CategoriesFragment())
                 R.id.nav_cart -> switchFragment(CartFragment())
-                R.id.nav_profile -> switchFragment(PlaceholderFragment.newInstance("Profile"))
+                R.id.nav_profile -> switchFragment(ProfileFragment())
             }
             true
         }
