@@ -20,7 +20,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import com.freshly.app.ui.onboarding.PartnerIntroActivity;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivityLegacy extends AppCompatActivity {
 
     private TextInputEditText etFullName;
     private TextInputEditText etEmail;

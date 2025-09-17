@@ -85,6 +85,11 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
     
+    // Payment Gateway (Razorpay)
+    implementation 'com.razorpay:checkout:1.6.33'
+    // Stripe Android SDK
+    implementation 'com.stripe:stripe-android:20.39.0'
+    
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

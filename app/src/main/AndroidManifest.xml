@@ -18,7 +18,7 @@
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/freshly_logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Freshly"
@@ -76,6 +76,10 @@
             android:exported="false"
             android:theme="@style/Theme.Freshly" />
         <activity
+            android:name=".ui.checkout.StripePaymentActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+        <activity
             android:name=".ui.checkout.PaymentSuccessActivity"
             android:exported="false"
             android:theme="@style/Theme.Freshly" />
@@ -98,6 +102,14 @@
             android:theme="@style/Theme.Freshly" />
         <activity
             android:name=".ui.onboarding.FarmerOnboardingStep3Activity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+        <activity
+            android:name=".ui.onboarding.FarmerOnboardingStep4Activity"
+            android:exported="false"
+            android:theme="@style/Theme.Freshly" />
+        <activity
+            android:name=".ui.onboarding.FarmerOnboardingStep5Activity"
             android:exported="false"
             android:theme="@style/Theme.Freshly" />
 

@@ -53,7 +53,8 @@ class PaymentMethodActivity : AppCompatActivity() {
         optionWallet.setOnClickListener { selectedMethod = METHOD_WALLET; highlightSelection() }
 
         btnContinue.setOnClickListener {
-            val intent = Intent(this, CardPaymentActivity::class.java)
+            val target = if (selectedMethod == METHOD_CARD) StripePaymentActivity::class.java else CardPaymentActivity::class.java
+            val intent = Intent(this, target)
                 .putExtra(EXTRA_SUBTOTAL, subtotal)
                 .putExtra(EXTRA_DELIVERY, delivery)
                 .putExtra(EXTRA_DISCOUNT, discount)

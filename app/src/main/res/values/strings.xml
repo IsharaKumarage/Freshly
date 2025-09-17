@@ -104,4 +104,21 @@
     <string name="upload_profile_photo">Upload Profile Photo</string>
     <string name="continue">Continue</string>
     <string name="back">Back</string>
+    <string name="farming_method">Farming Method</string>
+    <string name="method_conventional">Conventional</string>
+    <string name="method_conventional_desc">Standard farming practices</string>
+    <string name="method_organic">Organic</string>
+    <string name="method_organic_desc">No synthetic pesticides or fertilizers</string>
+    <string name="method_hydroponic">Hydroponic</string>
+    <string name="method_hydroponic_desc">Soil-less growing system</string>
+    <string name="what_do_you_grow">What do you grow? (Select all that apply)</string>
+    <string name="all_set">All Set!</string>
+    <string name="farmer_ready_desc">Your farmer profile is ready to go. You can now start adding your products and receiving orders.</string>
+    <string name="next_steps">Next Steps:</string>
+    <string name="next_step_add_product">Add your first product to start selling</string>
+    <string name="next_step_setup_payments">Set up your payment details to receive funds</string>
+    <string name="finish">Finish</string>
+    <string name="razorpay_key_id">rzp_test_your_key_here</string>
+    <string name="stripe_publishable_key">pk_test_your_key_here</string>
+    <string name="stripe_backend_base_url">https://your_backend.example.com</string>
 </resources>

@@ -55,7 +55,6 @@ class FarmerOnboardingStep3Activity : AppCompatActivity() {
                     "city" to city,
                     "farmDescription" to desc,
                     "userType" to "FARMER",
-                    "onboardingCompleted" to true,
                     "updatedAt" to System.currentTimeMillis()
                 )
                 try {
@@ -64,7 +63,7 @@ class FarmerOnboardingStep3Activity : AppCompatActivity() {
                         .collection("users").document(uid)
                         .set(data, com.google.firebase.firestore.SetOptions.merge())
                         .addOnSuccessListener {
-                            startActivity(Intent(this@FarmerOnboardingStep3Activity, com.freshly.app.ui.MainActivity::class.java))
+                            startActivity(Intent(this@FarmerOnboardingStep3Activity, FarmerOnboardingStep4Activity::class.java))
                             finish()
                         }
                         .addOnFailureListener { e ->
