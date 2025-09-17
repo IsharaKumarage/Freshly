@@ -11,6 +11,9 @@ import com.freshly.app.ui.MainActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import android.widget.CheckBox
+import android.widget.TextView
+
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -20,6 +23,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etPassword: TextInputEditText
     private lateinit var btnLogin: MaterialButton
     private lateinit var tvRegister: MaterialTextView
+    private lateinit var btnSignUp: MaterialButton
+    private lateinit var cbRememberMe: CheckBox
+    private lateinit var tvForgotPassword: TextView
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         
         repository = FirebaseRepository()
         initViews()
+        prefillRemembered()
         setupClickListeners()
     }
     
@@ -35,6 +42,9 @@ class LoginActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         tvRegister = findViewById(R.id.tvRegister)
+        btnSignUp = findViewById(R.id.btnSignUp)
+        cbRememberMe = findViewById(R.id.cbRememberMe)
+        tvForgotPassword = findViewById(R.id.tvForgotPassword)
     }
     
     private fun setupClickListeners() {
@@ -49,6 +59,27 @@ class LoginActivity : AppCompatActivity() {
         
         tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        btnSignUp.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        tvForgotPassword.setOnClickListener {
+            val email = etEmail.text?.toString()?.trim()
+            if (email.isNullOrEmpty()) {
+                Toast.makeText(this, getString(R.string.enter_email_to_reset), Toast.LENGTH_SHORT).show()
+            } else {
+                lifecycleScope.launch {
+                    repository.sendPasswordReset(email)
+                        .onSuccess {
+                            Toast.makeText(this@LoginActivity, getString(R.string.reset_email_sent), Toast.LENGTH_LONG).show()
+                        }
+                        .onFailure { e ->
+                            Toast.makeText(this@LoginActivity, e.message ?: getString(R.string.error_occurred), Toast.LENGTH_LONG).show()
+                        }
+                }
+            }
         }
     }
     
@@ -78,6 +109,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repository.signIn(email, password)
                 .onSuccess {
+                    persistRememberMe(email, password)
                     Toast.makeText(this@LoginActivity, getString(R.string.login_successful), Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
@@ -87,6 +119,33 @@ class LoginActivity : AppCompatActivity() {
                     btnLogin.isEnabled = true
                     btnLogin.text = getString(R.string.login)
                 }
+        }
+    }
+
+    private fun prefillRemembered() {
+        val prefs = getSharedPreferences("freshly_prefs", MODE_PRIVATE)
+        val remember = prefs.getBoolean("remember_me", false)
+        if (remember) {
+            etEmail.setText(prefs.getString("remember_email", "") ?: "")
+            etPassword.setText(prefs.getString("remember_password", "") ?: "")
+            cbRememberMe.isChecked = true
+        }
+    }
+
+    private fun persistRememberMe(email: String, password: String) {
+        val prefs = getSharedPreferences("freshly_prefs", MODE_PRIVATE)
+        if (cbRememberMe.isChecked) {
+            prefs.edit()
+                .putBoolean("remember_me", true)
+                .putString("remember_email", email)
+                .putString("remember_password", password)
+                .apply()
+        } else {
+            prefs.edit()
+                .putBoolean("remember_me", false)
+                .remove("remember_email")
+                .remove("remember_password")
+                .apply()
         }
     }
 }

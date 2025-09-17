@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Exclude cache files from backups -->
+    <exclude domain="cache" path="." />
+
+    <!-- Common database temp/journal files to exclude -->
+    <exclude domain="database" path=":memory:" />
+    <exclude domain="database" path="*.db-journal" />
+
+    <!-- Anything placed under res/xml/no_backup/ (if used) -->
+    <exclude domain="no_backup" path="." />
+
+    <!-- Exclude external storage by default (can include specific paths later) -->
+    <exclude domain="external" path="." />
+</full-backup-content>

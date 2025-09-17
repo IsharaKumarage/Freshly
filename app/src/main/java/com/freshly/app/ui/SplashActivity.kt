@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.freshly.app.R
 import com.freshly.app.ui.auth.LoginActivity
+import com.freshly.app.ui.onboarding.OnboardingActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
@@ -21,18 +22,26 @@ class SplashActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         
         Handler(Looper.getMainLooper()).postDelayed({
-            checkUserAuthentication()
+            routeFromSplash()
         }, splashTimeOut)
     }
     
-    private fun checkUserAuthentication() {
+    private fun routeFromSplash() {
+        val prefs = getSharedPreferences("freshly_prefs", MODE_PRIVATE)
+        val onboardingCompleted = prefs.getBoolean("onboarding_completed", false)
+
+        if (!onboardingCompleted) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
+            finish()
+            return
+        }
+
         val currentUser = auth.currentUser
         val intent = if (currentUser != null) {
             Intent(this, MainActivity::class.java)
         } else {
             Intent(this, LoginActivity::class.java)
         }
-        
         startActivity(intent)
         finish()
     }

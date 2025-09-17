@@ -4,11 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.freshly.app.R
-import com.freshly.app.ui.marketplace.MarketplaceFragment
-import com.freshly.app.ui.profile.ProfileFragment
-import com.freshly.app.ui.products.MyProductsFragment
-import com.freshly.app.ui.orders.OrdersFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.freshly.app.ui.marketplace.MarketplaceFragment
+import com.freshly.app.ui.cart.CartFragment
 
 class MainActivity : AppCompatActivity() {
     
@@ -17,41 +15,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
-        setupBottomNavigation()
-        
-        // Load default fragment
-        if (savedInstanceState == null) {
-            loadFragment(MarketplaceFragment())
-        }
-    }
-    
-    private fun setupBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottomNavigation)
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_marketplace -> {
-                    loadFragment(MarketplaceFragment())
-                    true
-                }
-                R.id.nav_my_products -> {
-                    loadFragment(MyProductsFragment())
-                    true
-                }
-                R.id.nav_orders -> {
-                    loadFragment(OrdersFragment())
-                    true
-                }
-                R.id.nav_profile -> {
-                    loadFragment(ProfileFragment())
-                    true
-                }
-                else -> false
+                R.id.nav_marketplace -> switchFragment(MarketplaceFragment())
+                R.id.nav_my_products -> switchFragment(PlaceholderFragment.newInstance("My Products"))
+                R.id.nav_cart -> switchFragment(CartFragment())
+                R.id.nav_profile -> switchFragment(PlaceholderFragment.newInstance("Profile"))
             }
+            true
+        }
+
+        if (savedInstanceState == null) {
+            bottomNavigation.selectedItemId = R.id.nav_marketplace
         }
     }
-    
-    private fun loadFragment(fragment: Fragment) {
+
+    private fun switchFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
             .commit()
