@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="etDescription" type="id" />
+    <item name="etCity" type="id" />
+    <item name="etAddress" type="id" />
+    <item name="etFarmName" type="id" />
 </resources>

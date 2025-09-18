@@ -117,9 +117,10 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/freshly_green"
-                android:text="@string/continue"
+                android:text="@string/continue_button"
                 android:textColor="@color/white"/>
         </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
+

@@ -13,6 +13,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import android.widget.CheckBox
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuthException
 
 import kotlinx.coroutines.launch
 
@@ -115,11 +116,27 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
                 .onFailure { exception ->
-                    Toast.makeText(this@LoginActivity, exception.message ?: getString(R.string.error_occurred), Toast.LENGTH_LONG).show()
+                    val message = mapFirebaseAuthError(exception)
+                    Toast.makeText(this@LoginActivity, message, Toast.LENGTH_LONG).show()
                     btnLogin.isEnabled = true
                     btnLogin.text = getString(R.string.login)
                 }
         }
+    }
+
+    private fun mapFirebaseAuthError(e: Throwable): String {
+        if (e is FirebaseAuthException) {
+            return when (e.errorCode) {
+                "ERROR_INVALID_EMAIL" -> "Invalid email format"
+                "ERROR_USER_NOT_FOUND" -> "No account found with this email"
+                "ERROR_WRONG_PASSWORD" -> "Incorrect password"
+                "ERROR_USER_DISABLED" -> "This account has been disabled"
+                "ERROR_TOO_MANY_REQUESTS" -> "Too many attempts. Please try again later"
+                "ERROR_NETWORK_REQUEST_FAILED" -> getString(R.string.network_error)
+                else -> e.localizedMessage ?: getString(R.string.error_occurred)
+            }
+        }
+        return e.localizedMessage ?: getString(R.string.error_occurred)
     }
 
     private fun prefillRemembered() {

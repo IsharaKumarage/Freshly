@@ -9,7 +9,6 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="full_name">Full Name</string>
-    <string name="phone_number">Phone Number</string>
     <string name="marketplace">Marketplace</string>
     <string name="my_products">My Products</string>
     <string name="orders">Orders</string>
@@ -96,13 +95,13 @@
     <string name="farm_information">Farm Information</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="phone_number" translatable="false">Phone Number</string>
     <string name="farm_name">Farm Name</string>
     <string name="address">Address</string>
     <string name="city">City</string>
     <string name="farm_description">Farm Description</string>
     <string name="upload_profile_photo">Upload Profile Photo</string>
-    <string name="continue">Continue</string>
+    <string name="continue_button">Continue</string>
     <string name="back">Back</string>
     <string name="farming_method">Farming Method</string>
     <string name="method_conventional">Conventional</string>

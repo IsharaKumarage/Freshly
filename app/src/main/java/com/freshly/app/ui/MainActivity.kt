@@ -13,29 +13,53 @@ import com.freshly.app.ui.profile.ProfileFragment
 class MainActivity : AppCompatActivity() {
     
     private lateinit var bottomNavigation: BottomNavigationView
+
+    private val fragments: Map<Int, Fragment> by lazy {
+        mapOf(
+            R.id.nav_marketplace to MarketplaceFragment(),
+            R.id.nav_my_products to CategoriesFragment(),
+            R.id.nav_cart to CartFragment(),
+            R.id.nav_profile to ProfileFragment()
+        )
+    }
+
+    private var currentItemId: Int = R.id.nav_marketplace
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
         bottomNavigation = findViewById(R.id.bottomNavigation)
+        
         bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_marketplace -> switchFragment(MarketplaceFragment())
-                R.id.nav_my_products -> switchFragment(CategoriesFragment())
-                R.id.nav_cart -> switchFragment(CartFragment())
-                R.id.nav_profile -> switchFragment(ProfileFragment())
-            }
-            true
+            val handled = fragments.containsKey(item.itemId)
+            if (handled) switchTo(item.itemId)
+            handled
         }
+        bottomNavigation.setOnItemReselectedListener { /* no-op */ }
 
         if (savedInstanceState == null) {
             bottomNavigation.selectedItemId = R.id.nav_marketplace
+            switchTo(R.id.nav_marketplace)
+        } else {
+            currentItemId = bottomNavigation.selectedItemId
+            switchTo(currentItemId, restore = true)
         }
     }
 
-    private fun switchFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+    private fun switchTo(itemId: Int, restore: Boolean = false) {
+        if (itemId == currentItemId && !restore) return
+        val transaction = supportFragmentManager.beginTransaction()
+        supportFragmentManager.findFragmentByTag(currentItemId.toString())?.let { transaction.hide(it) }
+        val tag = itemId.toString()
+        var target = supportFragmentManager.findFragmentByTag(tag)
+        if (target == null) {
+            target = fragments[itemId] ?: return
+            transaction.add(R.id.fragmentContainer, target, tag)
+        } else {
+            transaction.show(target)
+        }
+        transaction.commit()
+        currentItemId = itemId
     }
 }

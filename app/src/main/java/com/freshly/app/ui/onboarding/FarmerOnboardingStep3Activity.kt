@@ -1,5 +1,6 @@
 package com.freshly.app.ui.onboarding
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ class FarmerOnboardingStep3Activity : AppCompatActivity() {
 
     private val repo = FirebaseRepository()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_farmer_onboarding_step3)

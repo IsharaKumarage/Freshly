@@ -74,8 +74,10 @@ class StripePaymentActivity : AppCompatActivity() {
                 }
                 return@withContext null
             }
+            // Ensure Retrofit baseUrl ends with a trailing slash to avoid IllegalArgumentException
+            val normalizedBaseUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
             val retrofit = Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(normalizedBaseUrl)
                 .client(OkHttpClient.Builder().build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

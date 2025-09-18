@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "123456789000",
-    "project_id": "freshly-marketplace-placeholder",
-    "storage_bucket": "freshly-marketplace-placeholder.appspot.com"
+    "project_number": "511359681488",
+    "project_id": "freshly-superapp",
+    "storage_bucket": "freshly-superapp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789000:android:abcdef1234567890abcdef",
+        "mobilesdk_app_id": "1:511359681488:android:6c5ae28f207373e180efd5",
         "android_client_info": {
           "package_name": "com.freshly.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "123456789000-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDummyKeyForPlaceholderPurposes123456789"
+          "current_key": "AIzaSyC-eGhHFa7CGGZWWicLQGoeTtXuzwVy0AM"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "123456789000-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
