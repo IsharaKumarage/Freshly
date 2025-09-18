@@ -34,7 +34,7 @@
     <string name="dairy_products">Dairy Products</string>
     <string name="enter_email_to_reset">Enter your email to receive a reset link</string>
     <string name="reset_email_sent">Password reset email sent</string>
-    <string name="price_per_unit_fmt">$%.2f/%1$s</string>
+    <string name="price_per_unit_fmt">$%1$.2f/%2$s</string>
     <string name="from_farmer_fmt">From %1$s</string>
     <string name="tab_home">Home</string>
     <string name="tab_categories">Categories</string>

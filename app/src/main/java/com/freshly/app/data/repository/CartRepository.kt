@@ -1,5 +1,6 @@
 package com.freshly.app.data.repository
 
+import com.freshly.app.data.SampleDataProvider
 import com.freshly.app.data.model.CartItem
 import com.freshly.app.data.model.Product
 import com.google.firebase.auth.FirebaseAuth
@@ -92,6 +93,21 @@ class CartRepository {
         return try {
             val snap = itemsRef().get().await()
             for (doc in snap.documents) doc.reference.delete()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun addItem(product: Product): Result<Unit> {
+        return addToCart(product, 1)
+    }
+    
+    // For demo purposes - add sample cart items
+    suspend fun addSampleCartItems(): Result<Unit> {
+        return try {
+            val sampleProduct = SampleDataProvider.getSampleProducts().first { it.id == "1" } // Organic Baby Spinach
+            addToCart(sampleProduct, 3)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

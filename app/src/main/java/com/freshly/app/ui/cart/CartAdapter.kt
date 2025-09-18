@@ -33,7 +33,7 @@ class CartAdapter(
         val tvQty: TextView = itemView.findViewById(R.id.tvQty)
         val btnMinus: ImageButton = itemView.findViewById(R.id.btnMinus)
         val btnPlus: ImageButton = itemView.findViewById(R.id.btnPlus)
-        val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
+        val btnDelete: ImageButton? = try { itemView.findViewById(R.id.btnDelete) } catch (e: Exception) { null }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -43,14 +43,39 @@ class CartAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = getItem(position)
+        
+        // Set product name
         holder.tvName.text = item.name
-        holder.tvFarmer.text = holder.itemView.context.getString(R.string.from_farmer_fmt, item.farmerName)
-        holder.tvPrice.text = holder.itemView.context.getString(R.string.price_per_unit_fmt, item.price, item.unit)
+        
+        // Set farmer name with "Farm:" prefix as shown in UI
+        holder.tvFarmer.text = "Farm: ${item.farmerName}"
+        
+        // Set price with proper formatting
+        holder.tvPrice.text = "$${String.format("%.2f", item.price)}/${item.unit}"
+        
+        // Set quantity
         holder.tvQty.text = item.quantity.toString()
-        Glide.with(holder.itemView).load(item.imageUrl).placeholder(R.drawable.freshly_logo).into(holder.iv)
+        
+        // Load product image
+        Glide.with(holder.itemView)
+            .load(item.imageUrl)
+            .placeholder(R.drawable.freshly_logo)
+            .into(holder.iv)
 
-        holder.btnMinus.setOnClickListener { val q = (item.quantity - 1).coerceAtLeast(0); onQtyChange(item.id, q) }
-        holder.btnPlus.setOnClickListener { onQtyChange(item.id, item.quantity + 1) }
-        holder.btnDelete.setOnClickListener { onRemove(item.id) }
+        // Set up quantity change listeners
+        holder.btnMinus.setOnClickListener { 
+            val newQty = (item.quantity - 1).coerceAtLeast(0)
+            onQtyChange(item.id, newQty)
+        }
+        
+        holder.btnPlus.setOnClickListener { 
+            onQtyChange(item.id, item.quantity + 1)
+        }
+        
+        // Set up delete listener
+        holder.btnDelete?.setOnClickListener { 
+            onRemove(item.id) 
+        }
     }
 }
+

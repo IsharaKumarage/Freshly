@@ -12,7 +12,10 @@ import com.bumptech.glide.Glide
 import com.freshly.app.R
 import com.freshly.app.data.model.Product
 
-class ProductAdapter(private val onClick: (Product) -> Unit) : ListAdapter<Product, ProductAdapter.VH>(DIFF) {
+class ProductAdapter(
+    private val onClick: (Product) -> Unit,
+    private val onAddToCart: ((Product) -> Unit)? = null // kept for future use
+) : ListAdapter<Product, ProductAdapter.VH>(DIFF) {
 
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Product>() {
@@ -21,26 +24,38 @@ class ProductAdapter(private val onClick: (Product) -> Unit) : ListAdapter<Produ
         }
     }
 
-    class VH(itemView: View, val onClick: (Product) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    class VH(
+        itemView: View, 
+        val onClick: (Product) -> Unit,
+        val onAddToCart: ((Product) -> Unit)?
+    ) : RecyclerView.ViewHolder(itemView) {
         private val ivImage: ImageView = itemView.findViewById(R.id.ivImage)
         private val tvName: TextView = itemView.findViewById(R.id.tvName)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
+        
         private var current: Product? = null
+        
         init {
             itemView.setOnClickListener { current?.let { onClick(it) } }
         }
+        
         fun bind(item: Product) {
             current = item
             tvName.text = item.name
-            tvPrice.text = itemView.context.getString(R.string.price_per_unit_fmt, item.price, item.unit)
+            tvPrice.text = "$${String.format("%.2f", item.price)}/${item.unit}"
+            
+            // Load image
             val url = item.imageUrls.firstOrNull()
-            Glide.with(itemView).load(url).placeholder(R.drawable.freshly_logo).into(ivImage)
+            Glide.with(itemView)
+                .load(url)
+                .placeholder(R.drawable.freshly_logo)
+                .into(ivImage)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_product_card, parent, false)
-        return VH(view, onClick)
+        return VH(view, onClick, onAddToCart)
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {

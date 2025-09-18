@@ -10,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.freshly.app.R
+import com.freshly.app.data.CouponManager
+import com.freshly.app.data.SampleDataProvider
 import com.freshly.app.data.model.CartItem
 import com.freshly.app.data.repository.CartRepository
 import com.google.android.material.button.MaterialButton
@@ -102,14 +104,32 @@ class CartFragment : Fragment() {
     private fun updateTotals(items: List<CartItem>) {
         val subtotal = items.sumOf { it.total }
         val delivery = if (items.isNotEmpty()) 2.99 else 0.0
-        val discount = if (subtotal >= 25) 3.0 else 0.0
-        val total = subtotal + delivery - discount
+        
+        // Apply automatic discount using CouponManager
+        val automaticDiscount = CouponManager.getAutomaticDiscount(items)
+        
+        // Get best available coupon suggestion
+        val bestCoupon = CouponManager.getBestAvailableCoupon(items)
+        
+        val total = subtotal + delivery - automaticDiscount
 
-        tvSubtotal.text = getString(R.string.currency_amount, subtotal)
-        tvDelivery.text = getString(R.string.currency_amount, delivery)
-        tvDiscount.text = getString(R.string.currency_amount_negative, discount)
-        tvTotal.text = getString(R.string.currency_amount, total)
-        btnCheckout.text = getString(R.string.checkout)
+        tvSubtotal.text = "$${String.format("%.2f", subtotal)}"
+        tvDelivery.text = "Rs. ${String.format("%.2f", delivery)}"
+        tvDiscount.text = "-$${String.format("%.2f", automaticDiscount)}"
+        tvTotal.text = "$${String.format("%.2f", total)}"
+        
+        // Update checkout button text with total and item count
+        val itemCount = items.sumOf { it.quantity }
+        btnCheckout.text = "Checkout"
+        
+        // Show coupon suggestion if available
+        bestCoupon?.let { coupon ->
+            if (automaticDiscount == 0.0) { // Only show if no automatic discount applied
+                Snackbar.make(requireView(), 
+                    "💡 Add $${String.format("%.2f", coupon.minimumOrderAmount - subtotal)} more to get ${coupon.title}!", 
+                    Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun extractAmount(formatted: String): Double {

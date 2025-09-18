@@ -21,7 +21,7 @@ class ProductAdapter(
                 // Load product image using Glide or any other image loading library
                 Glide.with(itemView)
                     .load(product.imageUrls.firstOrNull())
-                    .placeholder(R.drawable.placeholder_product)
+                    .placeholder(R.drawable.freshly_logo)
                     .into(ivProductImage)
 
                 tvProductName.text = product.name

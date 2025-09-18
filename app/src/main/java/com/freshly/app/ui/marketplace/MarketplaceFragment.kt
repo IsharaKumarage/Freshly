@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.freshly.app.R
+import com.freshly.app.data.SampleDataProvider
 import com.freshly.app.data.model.Product
+import com.freshly.app.data.model.ProductCategory
+import com.freshly.app.data.repository.CartRepository
 import com.freshly.app.data.repository.FirebaseRepository
 import com.freshly.app.ui.product.ProductDetailsActivity
 import com.google.android.material.snackbar.Snackbar
@@ -20,13 +23,13 @@ import kotlinx.coroutines.launch
 class MarketplaceFragment : Fragment() {
 
     private val repository = FirebaseRepository()
-    private lateinit var rvCategories: RecyclerView
+    private val cartRepository = CartRepository()
+    
     private lateinit var rvDeals: RecyclerView
     private lateinit var rvNearby: RecyclerView
 
     private lateinit var dealsAdapter: ProductAdapter
     private lateinit var nearbyAdapter: ProductAdapter
-    private lateinit var categoryAdapter: CategoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -36,44 +39,75 @@ class MarketplaceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rvCategories = view.findViewById(R.id.rvCategories)
+        
+        // Initialize views
         rvDeals = view.findViewById(R.id.rvDeals)
         rvNearby = view.findViewById(R.id.rvNearby)
 
-        categoryAdapter = CategoryAdapter(
-            listOf(
-                CategoryItem(R.drawable.ic_vegetables, "Vegetables"),
-                CategoryItem(R.drawable.ic_fruits, "Fruits"),
-                CategoryItem(R.drawable.ic_dairy, "Dairy"),
-                CategoryItem(R.drawable.ic_eggs, "Eggs")
-            )
+        // Setup adapters with add to cart functionality
+        dealsAdapter = ProductAdapter(
+            onClick = { product -> openDetails(product) },
+            onAddToCart = { product -> addToCart(product) }
         )
-        rvCategories.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvCategories.adapter = categoryAdapter
-
-        dealsAdapter = ProductAdapter(onClick = { product -> openDetails(product) })
         rvDeals.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvDeals.adapter = dealsAdapter
 
-        nearbyAdapter = ProductAdapter(onClick = { product -> openDetails(product) })
+        nearbyAdapter = ProductAdapter(
+            onClick = { product -> openDetails(product) },
+            onAddToCart = { product -> addToCart(product) }
+        )
         rvNearby.layoutManager = GridLayoutManager(requireContext(), 2)
         rvNearby.adapter = nearbyAdapter
 
         loadData()
     }
+    
+    private fun filterByCategory(category: ProductCategory) {
+        val filteredProducts = SampleDataProvider.getProductsByCategory(category)
+        nearbyAdapter.submitList(filteredProducts)
+        
+        // Show snackbar with category name
+        val categoryName = when(category) {
+            ProductCategory.VEGETABLES -> "Vegetables"
+            ProductCategory.FRUITS -> "Fruits"
+            ProductCategory.DAIRY -> "Dairy & Eggs"
+            else -> "Products"
+        }
+        Snackbar.make(requireView(), "Showing $categoryName", Snackbar.LENGTH_SHORT).show()
+    }
 
     private fun loadData() {
+        // Use sample data for now - replace with Firebase call when ready
+        val allProducts = SampleDataProvider.getSampleProducts()
+        val deals = SampleDataProvider.getDiscountedProducts()
+        
+        dealsAdapter.submitList(deals)
+        nearbyAdapter.submitList(allProducts)
+        
+        // Uncomment below to use Firebase data
+        /*
         viewLifecycleOwner.lifecycleScope.launch {
             repository.getProducts()
                 .onSuccess { products ->
-                    // simple split: first few as deals, rest as nearby
-                    val deals = products.take(10)
-                    val nearby = products
+                    val deals = products.filter { SampleDataProvider.getProductDiscount(it.id) > 0 }
+                    nearbyAdapter.submitList(products)
                     dealsAdapter.submitList(deals)
-                    nearbyAdapter.submitList(nearby)
                 }
                 .onFailure { e ->
                     Snackbar.make(requireView(), e.message ?: getString(R.string.error_occurred), Snackbar.LENGTH_LONG).show()
+                }
+        }
+        */
+    }
+    
+    private fun addToCart(product: Product) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            cartRepository.addItem(product)
+                .onSuccess {
+                    Snackbar.make(requireView(), "${product.name} added to cart", Snackbar.LENGTH_SHORT).show()
+                }
+                .onFailure { e ->
+                    Snackbar.make(requireView(), e.message ?: "Failed to add to cart", Snackbar.LENGTH_SHORT).show()
                 }
         }
     }

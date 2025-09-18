@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.freshly.app.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.freshly.app.data.AppInitializer
 import com.freshly.app.ui.marketplace.MarketplaceFragment
 import com.freshly.app.ui.cart.CartFragment
 import com.freshly.app.ui.categories.CategoriesFragment
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             bottomNavigation.selectedItemId = R.id.nav_marketplace
             switchTo(R.id.nav_marketplace)
+            
+            // Initialize sample data for demo
+            AppInitializer.initializeSampleData()
         } else {
             currentItemId = bottomNavigation.selectedItemId
             switchTo(currentItemId, restore = true)

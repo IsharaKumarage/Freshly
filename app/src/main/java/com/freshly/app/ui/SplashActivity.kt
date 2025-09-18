@@ -1,7 +1,9 @@
 package com.freshly.app.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +12,7 @@ import com.freshly.app.R
 import com.freshly.app.ui.auth.LoginActivity
 import com.freshly.app.ui.onboarding.OnboardingActivity
 import com.google.firebase.auth.FirebaseAuth
+import android.util.Log
 
 class SplashActivity : AppCompatActivity() {
     
@@ -31,23 +34,16 @@ class SplashActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         
         if (currentUser != null) {
-            // User is signed in, navigate to home activity
             startActivity(Intent(this, com.freshly.app.ui.home.HomeActivity::class.java))
         } else {
-            // No user is signed in, navigate to login or onboarding
-            val isFirstLaunch = getSharedPreferences("app_prefs", MODE_PRIVATE)
-                .getBoolean("is_first_launch", true)
+            val prefs = getSharedPreferences("freshly_prefs", Context.MODE_PRIVATE)
+            val isOnboardingCompleted = prefs.getBoolean("onboarding_completed", false)
+            Log.d("Splash", "Onboarding completed: $isOnboardingCompleted")
                 
-            if (isFirstLaunch) {
-                // First launch, show onboarding
-                startActivity(Intent(this, OnboardingActivity::class.java))
-                // Mark as not first launch anymore
-                getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
-                    .putBoolean("is_first_launch", false)
-                    .apply()
-            } else {
-                // Not first launch, go to login
+            if (isOnboardingCompleted) {
                 startActivity(Intent(this, LoginActivity::class.java))
+            } else {
+                startActivity(Intent(this, OnboardingActivity::class.java))
             }
         }
         

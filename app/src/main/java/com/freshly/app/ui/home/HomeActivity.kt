@@ -33,35 +33,49 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupCategories() {
-        val categories = listOf(
-            Category("Fruits", R.drawable.ic_fruits),
-            Category("Vegetables", R.drawable.ic_vegetables),
-            Category("Dairy", R.drawable.ic_dairy),
-            Category("Eggs", R.drawable.ic_eggs)
-        )
-
-        categoryAdapter = CategoryAdapter(categories) { category ->
-            // Handle category click
-        }
-
-        binding.rvCategories.apply {
-            layoutManager = GridLayoutManager(
-                this@HomeActivity,
-                4,
-                GridLayoutManager.HORIZONTAL,
-                false
-            )
-            adapter = categoryAdapter
-            setHasFixedSize(true)
-        }
+        // Categories are provided via static includes in activity_home.xml's HorizontalScrollView.
+        // If you want a dynamic list, add a RecyclerView with id rvCategories in the layout and
+        // reintroduce the adapter + layoutManager setup here.
     }
 
     private fun setupProducts() {
         val products = listOf(
-            Product("Fresh Organic Apple", "1kg", 2.99, R.drawable.placeholder_product),
-            Product("Banana", "1kg", 1.49, R.drawable.placeholder_product),
-            Product("Orange", "1kg", 1.99, R.drawable.placeholder_product),
-            Product("Strawberry", "500g", 3.99, R.drawable.placeholder_product)
+            Product(
+                id = "1",
+                name = "Fresh Organic Apple",
+                description = "Crisp and sweet organic apples",
+                price = 2.99,
+                quantity = 1,
+                unit = "kg",
+                imageUrls = listOf()
+            ),
+            Product(
+                id = "2",
+                name = "Banana",
+                description = "Ripe bananas",
+                price = 1.49,
+                quantity = 1,
+                unit = "kg",
+                imageUrls = listOf()
+            ),
+            Product(
+                id = "3",
+                name = "Orange",
+                description = "Juicy oranges",
+                price = 1.99,
+                quantity = 1,
+                unit = "kg",
+                imageUrls = listOf()
+            ),
+            Product(
+                id = "4",
+                name = "Strawberry",
+                description = "Fresh strawberries",
+                price = 3.99,
+                quantity = 500,
+                unit = "g",
+                imageUrls = listOf()
+            )
         )
 
         productAdapter = ProductAdapter(products) { product ->

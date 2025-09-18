@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.freshly.app.R
 import com.freshly.app.ui.auth.LoginActivity
 import com.google.android.material.button.MaterialButton
+import android.util.Log
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -23,10 +24,10 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun markOnboardingCompleted() {
-        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(KEY_ONBOARDING_COMPLETED, true)
-            .apply()
+        val editor = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+        editor.putBoolean(KEY_ONBOARDING_COMPLETED, true)
+        val success = editor.commit()
+        Log.d("Onboarding", "Onboarding completion saved: $success")
     }
 
     companion object {
