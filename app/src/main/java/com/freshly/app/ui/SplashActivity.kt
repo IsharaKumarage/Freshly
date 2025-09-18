@@ -28,22 +28,29 @@ class SplashActivity : AppCompatActivity() {
     }
     
     private fun routeFromSplash() {
-        val prefs = getSharedPreferences("freshly_prefs", MODE_PRIVATE)
-        val onboardingCompleted = prefs.getBoolean("onboarding_completed", false)
-
-        if (!onboardingCompleted) {
-            startActivity(Intent(this, OnboardingActivity::class.java))
-            finish()
-            return
-        }
-
         val currentUser = auth.currentUser
-        val intent = if (currentUser != null) {
-            Intent(this, MainActivity::class.java)
+        
+        if (currentUser != null) {
+            // User is signed in, navigate to home activity
+            startActivity(Intent(this, com.freshly.app.ui.home.HomeActivity::class.java))
         } else {
-            Intent(this, LoginActivity::class.java)
+            // No user is signed in, navigate to login or onboarding
+            val isFirstLaunch = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                .getBoolean("is_first_launch", true)
+                
+            if (isFirstLaunch) {
+                // First launch, show onboarding
+                startActivity(Intent(this, OnboardingActivity::class.java))
+                // Mark as not first launch anymore
+                getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                    .putBoolean("is_first_launch", false)
+                    .apply()
+            } else {
+                // Not first launch, go to login
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
         }
-        startActivity(intent)
+        
         finish()
     }
 }

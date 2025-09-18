@@ -1,5 +1,7 @@
 package com.freshly.app.data.model
 
+import kotlin.collections.emptyList
+
 data class Product(
     val id: String = "",
     val name: String = "",
