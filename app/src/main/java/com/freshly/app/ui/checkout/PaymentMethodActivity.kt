@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.freshly.app.R
+import com.freshly.app.utils.PriceUtil
 
 class PaymentMethodActivity : AppCompatActivity() {
 
@@ -43,10 +44,10 @@ class PaymentMethodActivity : AppCompatActivity() {
         tvTotal = findViewById(R.id.tvTotal)
         btnContinue = findViewById(R.id.btnContinue)
 
-        tvSubtotal.text = getString(R.string.currency_amount, subtotal)
-        tvDelivery.text = getString(R.string.currency_amount, delivery)
-        tvDiscount.text = getString(R.string.currency_amount_negative, discount)
-        tvTotal.text = getString(R.string.currency_amount, total)
+        tvSubtotal.text = PriceUtil.formatPrice(subtotal)
+        tvDelivery.text = PriceUtil.formatPrice(delivery)
+        tvDiscount.text = "-${PriceUtil.formatPrice(discount).removePrefix("Rs. ")}"
+        tvTotal.text = PriceUtil.formatPrice(total)
 
         optionCard.setOnClickListener { selectedMethod = METHOD_CARD; highlightSelection() }
         optionBank.setOnClickListener { selectedMethod = METHOD_BANK; highlightSelection() }

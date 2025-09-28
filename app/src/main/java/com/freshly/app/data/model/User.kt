@@ -17,5 +17,6 @@ data class User(
 
 enum class UserType {
     FARMER,
-    CONSUMER
+    CONSUMER,
+    ADMIN
 }

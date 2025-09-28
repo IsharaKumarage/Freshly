@@ -21,6 +21,16 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/white</item>
         <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Global text appearances to force black text by default -->
+        <item name="textAppearanceBodyLarge">@style/AppTextAppearance.Body</item>
+        <item name="textAppearanceBodyMedium">@style/AppTextAppearance.Body</item>
+        <item name="textAppearanceBodySmall">@style/AppTextAppearance.Body</item>
+        <item name="textAppearanceTitleMedium">@style/AppTextAppearance.Title</item>
+        <item name="textAppearanceTitleLarge">@style/AppTextAppearance.Title</item>
+
+        <!-- Default TextInput style with gray hints -->
+        <item name="textInputStyle">@style/AppTextInputStyle</item>
     </style>
 
     <!-- Splash screen theme -->

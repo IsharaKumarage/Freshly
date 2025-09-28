@@ -14,8 +14,12 @@ import com.google.android.material.textview.MaterialTextView
 import android.widget.CheckBox
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.firestore.FirebaseFirestore
+import com.freshly.app.ui.farmer.FarmerDashboardActivity
+import com.freshly.app.ui.admin.AdminDashboardActivity
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class LoginActivity : AppCompatActivity() {
     
@@ -112,8 +116,17 @@ class LoginActivity : AppCompatActivity() {
                 .onSuccess {
                     persistRememberMe(email, password)
                     Toast.makeText(this@LoginActivity, getString(R.string.login_successful), Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    finish()
+                    try {
+                        val uid = it
+                        val snap = FirebaseFirestore.getInstance()
+                            .collection("users").document(uid)
+                            .get().await()
+                        val role = (snap.getString("userType") ?: "CONSUMER").uppercase()
+                        routeByRole(role)
+                    } catch (_: Exception) {
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
                 }
                 .onFailure { exception ->
                     val message = mapFirebaseAuthError(exception)
@@ -122,6 +135,16 @@ class LoginActivity : AppCompatActivity() {
                     btnLogin.text = getString(R.string.login)
                 }
         }
+    }
+
+    private fun routeByRole(role: String) {
+        val target = when (role) {
+            "FARMER" -> FarmerDashboardActivity::class.java
+            "ADMIN" -> AdminDashboardActivity::class.java
+            else -> MainActivity::class.java
+        }
+        startActivity(Intent(this@LoginActivity, target))
+        finish()
     }
 
     private fun mapFirebaseAuthError(e: Throwable): String {

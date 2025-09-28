@@ -99,8 +99,31 @@ class CartRepository {
         }
     }
     
-    suspend fun addItem(product: Product): Result<Unit> {
-        return addToCart(product, 1)
+    suspend fun addItem(cartItem: CartItem): Result<Unit> {
+        return try {
+            // Check if item exists, increment; else create
+            val query = itemsRef().whereEqualTo("productId", cartItem.productId).get().await()
+            if (!query.isEmpty) {
+                val doc = query.documents.first()
+                val current = doc.getLong("quantity")?.toInt() ?: 0
+                doc.reference.update("quantity", current + cartItem.quantity).await()
+            } else {
+                val data = hashMapOf(
+                    "productId" to cartItem.productId,
+                    "name" to cartItem.name,
+                    "imageUrl" to cartItem.imageUrl,
+                    "unit" to cartItem.unit,
+                    "price" to cartItem.price,
+                    "quantity" to cartItem.quantity,
+                    "farmerId" to cartItem.farmerId,
+                    "farmerName" to cartItem.farmerName,
+                )
+                itemsRef().add(data).await()
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
     
     // For demo purposes - add sample cart items

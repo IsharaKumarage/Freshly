@@ -78,11 +78,20 @@ class HomeActivity : AppCompatActivity() {
             )
         )
 
-        productAdapter = ProductAdapter(products) { product ->
-            // Handle product click
-        }
+        productAdapter = ProductAdapter(
+            onProductClick = { product ->
+                // Handle product click
+            },
+            onAddToCart = { product ->
+                // Handle add to cart
+            },
+            onWishlistClick = { product ->
+                // Handle wishlist click
+            }
+        )
 
         binding.rvProducts.adapter = productAdapter
+        productAdapter.submitList(products)
     }
 
     private fun setupBottomNavigation() {

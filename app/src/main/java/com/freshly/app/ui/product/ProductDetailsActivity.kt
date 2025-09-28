@@ -14,6 +14,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import android.content.Intent
+import com.freshly.app.ui.auth.LoginActivity
+import com.freshly.app.ui.checkout.PaymentMethodActivity
 
 class ProductDetailsActivity : AppCompatActivity() {
 
@@ -45,18 +49,42 @@ class ProductDetailsActivity : AppCompatActivity() {
         btnAddToCart.setOnClickListener {
             val p = product
             if (p != null) {
-                lifecycleScope.launch {
-                    cartRepo.addToCart(p, 1)
-                        .onSuccess {
-                            Snackbar.make(findViewById(android.R.id.content), getString(R.string.added_to_cart), Snackbar.LENGTH_LONG).show()
-                        }
-                        .onFailure { e ->
-                            Snackbar.make(findViewById(android.R.id.content), e.message ?: getString(R.string.error_occurred), Snackbar.LENGTH_LONG).show()
-                        }
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user == null) {
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_required), Snackbar.LENGTH_LONG).show()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                } else {
+                    lifecycleScope.launch {
+                        cartRepo.addToCart(p, 1)
+                            .onSuccess {
+                                Snackbar.make(findViewById(android.R.id.content), getString(R.string.added_to_cart), Snackbar.LENGTH_LONG).show()
+                            }
+                            .onFailure { e ->
+                                Snackbar.make(findViewById(android.R.id.content), e.message ?: getString(R.string.error_occurred), Snackbar.LENGTH_LONG).show()
+                            }
+                    }
                 }
             }
         }
-        btnBuyNow.setOnClickListener { /* TODO: checkout implementation */ }
+        btnBuyNow.setOnClickListener {
+            val p = product ?: return@setOnClickListener
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_required), Snackbar.LENGTH_LONG).show()
+                startActivity(Intent(this, LoginActivity::class.java))
+                return@setOnClickListener
+            }
+            val subtotal = p.price
+            val delivery = 0.0
+            val discount = 0.0
+            val total = subtotal + delivery - discount
+            val intent = Intent(this, PaymentMethodActivity::class.java)
+                .putExtra(PaymentMethodActivity.EXTRA_SUBTOTAL, subtotal)
+                .putExtra(PaymentMethodActivity.EXTRA_DELIVERY, delivery)
+                .putExtra(PaymentMethodActivity.EXTRA_DISCOUNT, discount)
+                .putExtra(PaymentMethodActivity.EXTRA_TOTAL, total)
+            startActivity(intent)
+        }
     }
 
     companion object {

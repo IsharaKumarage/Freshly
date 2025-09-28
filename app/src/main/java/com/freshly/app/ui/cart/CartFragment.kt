@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import android.content.Intent
 import com.freshly.app.ui.checkout.PaymentMethodActivity
+import com.freshly.app.utils.PriceUtil
 
 class CartFragment : Fragment() {
 
@@ -113,10 +114,10 @@ class CartFragment : Fragment() {
         
         val total = subtotal + delivery - automaticDiscount
 
-        tvSubtotal.text = "$${String.format("%.2f", subtotal)}"
-        tvDelivery.text = "Rs. ${String.format("%.2f", delivery)}"
-        tvDiscount.text = "-$${String.format("%.2f", automaticDiscount)}"
-        tvTotal.text = "$${String.format("%.2f", total)}"
+        tvSubtotal.text = PriceUtil.formatPrice(subtotal)
+        tvDelivery.text = PriceUtil.formatPrice(delivery)
+        tvDiscount.text = "-${PriceUtil.formatPrice(automaticDiscount).removePrefix("Rs. ")}"
+        tvTotal.text = PriceUtil.formatPrice(total)
         
         // Update checkout button text with total and item count
         val itemCount = items.sumOf { it.quantity }
@@ -133,8 +134,14 @@ class CartFragment : Fragment() {
     }
 
     private fun extractAmount(formatted: String): Double {
-        // expects formats like $8.96 or -$3.00
-        val cleaned = formatted.replace("$", "").replace(",", "").trim()
+        // Accepts formats like Rs. 8,96 or - Rs. 3.00
+        val cleaned = formatted
+            .replace("Rs.", "", ignoreCase = true)
+            .replace(",", "")
+            .replace(" ", "")
+            .replace("₹", "")
+            .replace("$", "")
+            .trim()
         return cleaned.toDoubleOrNull() ?: 0.0
     }
 }

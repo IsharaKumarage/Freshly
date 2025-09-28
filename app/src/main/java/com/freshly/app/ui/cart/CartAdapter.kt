@@ -26,14 +26,15 @@ class CartAdapter(
     }
 
     class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val iv: ImageView = itemView.findViewById(R.id.ivImage)
-        val tvName: TextView = itemView.findViewById(R.id.tvName)
-        val tvFarmer: TextView = itemView.findViewById(R.id.tvFarmer)
-        val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
-        val tvQty: TextView = itemView.findViewById(R.id.tvQty)
-        val btnMinus: ImageButton = itemView.findViewById(R.id.btnMinus)
-        val btnPlus: ImageButton = itemView.findViewById(R.id.btnPlus)
-        val btnDelete: ImageButton? = try { itemView.findViewById(R.id.btnDelete) } catch (e: Exception) { null }
+        val iv: ImageView = itemView.findViewById(R.id.ivProductImage)
+        val tvName: TextView = itemView.findViewById(R.id.tvProductName)
+        val tvFarmer: TextView = itemView.findViewById(R.id.tvFarmerName)
+        val tvPrice: TextView = itemView.findViewById(R.id.tvProductPrice)
+        val tvQty: TextView = itemView.findViewById(R.id.tvQuantity)
+        val btnMinus: com.google.android.material.button.MaterialButton = itemView.findViewById(R.id.btnDecrease)
+        val btnPlus: com.google.android.material.button.MaterialButton = itemView.findViewById(R.id.btnIncrease)
+        val btnDelete: ImageButton = itemView.findViewById(R.id.btnRemove)
+        val tvTotal: TextView = itemView.findViewById(R.id.tvTotalPrice)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -47,24 +48,27 @@ class CartAdapter(
         // Set product name
         holder.tvName.text = item.name
         
-        // Set farmer name with "Farm:" prefix as shown in UI
-        holder.tvFarmer.text = "Farm: ${item.farmerName}"
+        // Set farmer name with "by" prefix
+        holder.tvFarmer.text = "by ${item.farmerName}"
         
         // Set price with proper formatting
-        holder.tvPrice.text = "$${String.format("%.2f", item.price)}/${item.unit}"
+        holder.tvPrice.text = "₹${String.format("%.2f", item.price)} / ${item.unit}"
         
         // Set quantity
         holder.tvQty.text = item.quantity.toString()
         
+        // Set total price
+        holder.tvTotal.text = "₹${String.format("%.2f", item.total)}"
+        
         // Load product image
         Glide.with(holder.itemView)
             .load(item.imageUrl)
-            .placeholder(R.drawable.freshly_logo)
+            .placeholder(R.drawable.placeholder_product)
             .into(holder.iv)
 
         // Set up quantity change listeners
         holder.btnMinus.setOnClickListener { 
-            val newQty = (item.quantity - 1).coerceAtLeast(0)
+            val newQty = (item.quantity - 1).coerceAtLeast(1)
             onQtyChange(item.id, newQty)
         }
         
@@ -73,7 +77,7 @@ class CartAdapter(
         }
         
         // Set up delete listener
-        holder.btnDelete?.setOnClickListener { 
+        holder.btnDelete.setOnClickListener { 
             onRemove(item.id) 
         }
     }

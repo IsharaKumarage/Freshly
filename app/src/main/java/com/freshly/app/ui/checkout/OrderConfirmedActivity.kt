@@ -10,6 +10,7 @@ import com.google.android.material.button.MaterialButton
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import com.freshly.app.utils.PriceUtil
 
 class OrderConfirmedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +40,9 @@ class OrderConfirmedActivity : AppCompatActivity() {
         tvSlot.text = getString(R.string.between_label, "9:00 AM", "12:00 PM")
 
         // Placeholder summary: show total only (others 0). Extend with real values if passed.
-        tvSubtotal.text = getString(R.string.currency_amount, 0.0)
-        tvDelivery.text = getString(R.string.currency_amount, 3.99)
-        tvTotal.text = getString(R.string.currency_amount, total)
+        tvSubtotal.text = PriceUtil.formatPrice(0.0)
+        tvDelivery.text = PriceUtil.formatPrice(3.99)
+        tvTotal.text = PriceUtil.formatPrice(total)
 
         btnContinueShopping.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK))

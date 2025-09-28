@@ -8,13 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.freshly.app.R
 
-data class CategoryItem(val iconRes: Int, val title: String)
+data class CategoryItem(val iconEmoji: String, val title: String, val count: Int = 0)
 
 class CategoryAdapter(private val items: List<CategoryItem>) : RecyclerView.Adapter<CategoryAdapter.VH>() {
 
     class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val icon: ImageView = itemView.findViewById(R.id.ivIcon)
-        val title: TextView = itemView.findViewById(R.id.tvTitle)
+        val icon: TextView = itemView.findViewById(R.id.tvCategoryIcon)
+        val title: TextView = itemView.findViewById(R.id.tvCategoryName)
+        val count: TextView = itemView.findViewById(R.id.tvProductCount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -24,8 +25,9 @@ class CategoryAdapter(private val items: List<CategoryItem>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
-        holder.icon.setImageResource(item.iconRes)
+        holder.icon.text = item.iconEmoji
         holder.title.text = item.title
+        holder.count.text = "${item.count} items"
     }
 
     override fun getItemCount(): Int = items.size

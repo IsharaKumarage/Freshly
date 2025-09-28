@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.freshly.app.R
 import com.freshly.app.data.SampleDataProvider
+import com.freshly.app.data.model.CartItem
 import com.freshly.app.data.model.Product
 import com.freshly.app.data.model.ProductCategory
 import com.freshly.app.data.repository.CartRepository
 import com.freshly.app.data.repository.FirebaseRepository
+import com.freshly.app.ui.adapters.ProductAdapter
 import com.freshly.app.ui.product.ProductDetailsActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -46,15 +48,17 @@ class MarketplaceFragment : Fragment() {
 
         // Setup adapters with add to cart functionality
         dealsAdapter = ProductAdapter(
-            onClick = { product -> openDetails(product) },
-            onAddToCart = { product -> addToCart(product) }
+            onProductClick = { product -> openDetails(product) },
+            onAddToCart = { product -> addToCart(product) },
+            onWishlistClick = { product -> addToWishlist(product) }
         )
         rvDeals.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvDeals.adapter = dealsAdapter
 
         nearbyAdapter = ProductAdapter(
-            onClick = { product -> openDetails(product) },
-            onAddToCart = { product -> addToCart(product) }
+            onProductClick = { product -> openDetails(product) },
+            onAddToCart = { product -> addToCart(product) },
+            onWishlistClick = { product -> addToWishlist(product) }
         )
         rvNearby.layoutManager = GridLayoutManager(requireContext(), 2)
         rvNearby.adapter = nearbyAdapter
@@ -102,7 +106,18 @@ class MarketplaceFragment : Fragment() {
     
     private fun addToCart(product: Product) {
         viewLifecycleOwner.lifecycleScope.launch {
-            cartRepository.addItem(product)
+            val cartItem = CartItem(
+                productId = product.id,
+                name = product.name,
+                imageUrl = product.imageUrls.firstOrNull() ?: "",
+                unit = product.unit,
+                price = product.price,
+                quantity = 1,
+                farmerId = product.farmerId,
+                farmerName = product.farmerName
+            )
+            
+            cartRepository.addItem(cartItem)
                 .onSuccess {
                     Snackbar.make(requireView(), "${product.name} added to cart", Snackbar.LENGTH_SHORT).show()
                 }
@@ -110,6 +125,11 @@ class MarketplaceFragment : Fragment() {
                     Snackbar.make(requireView(), e.message ?: "Failed to add to cart", Snackbar.LENGTH_SHORT).show()
                 }
         }
+    }
+    
+    private fun addToWishlist(product: Product) {
+        // TODO: Implement wishlist functionality
+        Snackbar.make(requireView(), "${product.name} added to wishlist", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun openDetails(product: Product) {

@@ -11,6 +11,9 @@ import com.freshly.app.R
 import com.freshly.app.ui.auth.LoginActivity
 import com.freshly.app.ui.onboarding.OnboardingActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.freshly.app.ui.farmer.FarmerDashboardActivity
+import com.freshly.app.ui.admin.AdminDashboardActivity
 
 class SplashActivity : AppCompatActivity() {
     
@@ -40,13 +43,29 @@ class SplashActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         // Only auto-skip to Main if the user opted to be remembered and is still signed-in
         val rememberMe = prefs.getBoolean("remember_me", false)
-        val intent = if (currentUser != null && rememberMe) {
-            Intent(this, MainActivity::class.java)
+        if (currentUser != null && rememberMe) {
+            // Fetch role and route accordingly
+            FirebaseFirestore.getInstance()
+                .collection("users").document(currentUser.uid)
+                .get()
+                .addOnSuccessListener { snap ->
+                    val role = (snap.getString("userType") ?: "CONSUMER").uppercase()
+                    val target = when (role) {
+                        "FARMER" -> FarmerDashboardActivity::class.java
+                        "ADMIN" -> AdminDashboardActivity::class.java
+                        else -> MainActivity::class.java
+                    }
+                    startActivity(Intent(this, target))
+                    finish()
+                }
+                .addOnFailureListener {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
         } else {
-            Intent(this, LoginActivity::class.java)
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
-        startActivity(intent)
-        finish()
     }
 
     override fun onDestroy() {

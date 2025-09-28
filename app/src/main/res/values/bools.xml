@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Toggle Firebase Storage usage. Set to true when your Firebase project has Storage enabled. -->
+    <bool name="use_firebase_storage">false</bool>
+    <!-- If not using Storage, we will store images as base64 strings in Firestore/Realtime DB and render locally. -->
+    <bool name="use_realtime_db_images">true</bool>
+</resources>
